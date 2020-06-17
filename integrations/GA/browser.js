@@ -815,7 +815,7 @@ class GA {
       contentGroupingsArray
     );
     if (Object.keys(custom).length) {
-      if (inputs.setAllMappedProps) {
+      if (this.setAllMappedProps) {
         ga("set", custom);
       } else {
         each(custom, function (key, value) {
