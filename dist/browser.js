@@ -2660,7 +2660,7 @@ var rudderanalytics = (function (exports) {
 
               default:
                 var eventCategory = rudderElement.message.properties.category;
-                var eventAction = rudderElement.message.event;
+                var eventAction = rudderElement.message.event || "";
                 var eventLabel = rudderElement.message.properties.label;
                 var eventValue = "";
 
@@ -2689,12 +2689,12 @@ var rudderanalytics = (function (exports) {
                 payload = _objectSpread2({
                   payload: payload
                 }, this.setCustomDimenionsAndMetrics(rudderElement.message.properties, this.dimensions, this.metrics, this.contentGroupings));
-                ga("send", "event", payload);
+                ga("send", "event", payload.payload);
                 logger.debug("in GoogleAnalyticsManager track");
             }
           } else {
             var eventCategory = rudderElement.message.properties.category;
-            var eventAction = rudderElement.message.event;
+            var eventAction = rudderElement.message.event || "";
             var eventLabel = rudderElement.message.properties.label;
             var eventValue = "";
 
@@ -2723,7 +2723,7 @@ var rudderanalytics = (function (exports) {
             payload = _objectSpread2({
               payload: payload
             }, this.setCustomDimenionsAndMetrics(rudderElement.message.properties, this.dimensions, this.metrics, this.contentGroupings));
-            ga("send", "event", payload);
+            ga("send", "event", payload.payload);
             logger.debug("in GoogleAnalyticsManager track");
           }
       }
@@ -2786,9 +2786,9 @@ var rudderanalytics = (function (exports) {
           title: pageTitle
         };
         if (pageReferrer !== document.referrer) payload.referrer = pageReferrer;
-        ga("set", payload);
+        ga("set", payload.payload);
         if (this.pageCalled) delete pageview.location;
-        ga("send", "pageview", pageview); //categorized pages
+        ga("send", "pageview", pageview.pageview); //categorized pages
 
         if (category && this.trackCategorizedPages) {
           this.track(rudderElement, {

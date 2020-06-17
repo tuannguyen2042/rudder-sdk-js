@@ -556,7 +556,7 @@ class GA {
           break;
         default:
           var eventCategory = rudderElement.message.properties.category;
-          var eventAction = rudderElement.message.event;
+          var eventAction = rudderElement.message.event || "";
           var eventLabel = rudderElement.message.properties.label;
           var eventValue = "";
           if (rudderElement.message.properties) {
@@ -596,13 +596,13 @@ class GA {
               this.contentGroupings
             ),
           };
-
-          ga("send", "event", payload);
+ 
+          ga("send", "event", payload.payload);
           logger.debug("in GoogleAnalyticsManager track");
       }
     } else {
       var eventCategory = rudderElement.message.properties.category;
-      var eventAction = rudderElement.message.event;
+      var eventAction = rudderElement.message.event || "";
       var eventLabel = rudderElement.message.properties.label;
       var eventValue = "";
       if (rudderElement.message.properties) {
@@ -643,7 +643,7 @@ class GA {
         ),
       };
 
-      ga("send", "event", payload);
+      ga("send", "event", payload.payload);
       logger.debug("in GoogleAnalyticsManager track");
     }
   }
@@ -727,11 +727,11 @@ class GA {
     };
     if (pageReferrer !== document.referrer) payload.referrer = pageReferrer;
 
-    ga("set", payload);
+    ga("set", payload.payload);
 
     if (this.pageCalled) delete pageview.location;
 
-    ga("send", "pageview", pageview);
+    ga("send", "pageview", pageview.pageview);
 
     //categorized pages
     if (category && this.trackCategorizedPages) {
