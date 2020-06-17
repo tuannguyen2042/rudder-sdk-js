@@ -653,10 +653,20 @@ class GA {
 
     var category = rudderElement.message.properties.category;
     var eventProperties = rudderElement.message.properties;
-    var name =
+    var name;
+    if(rudderElement.message.properties.category && rudderElement.message.name){
+    name =
       rudderElement.message.properties.category +
       " " +
       rudderElement.message.name;
+    }
+     else if(!rudderElement.message.properties.category && !rudderElement.message.name){
+       name = ""
+     }
+    else{
+       name = rudderElement.message.name || rudderElement.message.properties.category
+     }
+  
     var campaign = rudderElement.message.context.campaign | {};
     var pageview = {};
     var pagePath = this.path(eventProperties, this.includeSearch);

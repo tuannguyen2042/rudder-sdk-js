@@ -2281,7 +2281,6 @@ var rudderanalytics = (function (exports) {
       this.trackNamedPages = config.trackNamedPages || true;
       this.optimizeContainerId = config.optimize || "";
       this.resetCustomDimensionsOnPage = config.resetCustomDimensionsOnPage || [];
-      this.inputs = config;
       this.enhancedEcommerceLoaded = 0;
       this.name = "GA";
       this.eventWithCategoryFieldProductScoped = ["product clicked", "product added", "product viewed", "product removed"];
@@ -2405,7 +2404,6 @@ var rudderanalytics = (function (exports) {
 
 
         var custom = this.metricsFunction(rudderElement.message.context.traits, this.dimensionsArray, this.metricsArray, this.contentGroupingsArray);
-        console.log(Object.keys(custom).length);
         if (Object.keys(custom).length) ga("set", custom);
         logger.debug("in GoogleAnalyticsManager identify");
       }
@@ -2735,7 +2733,16 @@ var rudderanalytics = (function (exports) {
         logger.debug("in GoogleAnalyticsManager page");
         var category = rudderElement.message.properties.category;
         var eventProperties = rudderElement.message.properties;
-        var name = rudderElement.message.properties.category + " " + rudderElement.message.name;
+        var name;
+
+        if (rudderElement.message.properties.category && rudderElement.message.name) {
+          name = rudderElement.message.properties.category + " " + rudderElement.message.name;
+        } else if (!rudderElement.message.properties.category && !rudderElement.message.name) {
+          name = "";
+        } else {
+          name = rudderElement.message.name || rudderElement.message.properties.category;
+        }
+
         var campaign = rudderElement.message.context.campaign | {};
         var pageview = {};
         var pagePath = this.path(eventProperties, this.includeSearch);
