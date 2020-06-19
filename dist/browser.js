@@ -2026,237 +2026,6 @@ var rudderanalytics = (function (exports) {
     }
   }
 
-  var max = Math.max;
-
-  /**
-   * Produce a new array composed of all but the first `n` elements of an input `collection`.
-   *
-   * @name drop
-   * @api public
-   * @param {number} count The number of elements to drop.
-   * @param {Array} collection The collection to iterate over.
-   * @return {Array} A new array containing all but the first element from `collection`.
-   * @example
-   * drop(0, [1, 2, 3]); // => [1, 2, 3]
-   * drop(1, [1, 2, 3]); // => [2, 3]
-   * drop(2, [1, 2, 3]); // => [3]
-   * drop(3, [1, 2, 3]); // => []
-   * drop(4, [1, 2, 3]); // => []
-   */
-  var drop = function drop(count, collection) {
-    var length = collection ? collection.length : 0;
-
-    if (!length) {
-      return [];
-    }
-
-    // Preallocating an array *significantly* boosts performance when dealing with
-    // `arguments` objects on v8. For a summary, see:
-    // https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
-    var toDrop = max(Number(count) || 0, 0);
-    var resultsLength = max(length - toDrop, 0);
-    var results = new Array(resultsLength);
-
-    for (var i = 0; i < resultsLength; i += 1) {
-      results[i] = collection[i + toDrop];
-    }
-
-    return results;
-  };
-
-  /*
-   * Exports.
-   */
-
-  var drop_1 = drop;
-
-  var max$1 = Math.max;
-
-  /**
-   * Produce a new array by passing each value in the input `collection` through a transformative
-   * `iterator` function. The `iterator` function is passed three arguments:
-   * `(value, index, collection)`.
-   *
-   * @name rest
-   * @api public
-   * @param {Array} collection The collection to iterate over.
-   * @return {Array} A new array containing all but the first element from `collection`.
-   * @example
-   * rest([1, 2, 3]); // => [2, 3]
-   */
-  var rest = function rest(collection) {
-    if (collection == null || !collection.length) {
-      return [];
-    }
-
-    // Preallocating an array *significantly* boosts performance when dealing with
-    // `arguments` objects on v8. For a summary, see:
-    // https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
-    var results = new Array(max$1(collection.length - 2, 0));
-
-    for (var i = 1; i < collection.length; i += 1) {
-      results[i - 1] = collection[i];
-    }
-
-    return results;
-  };
-
-  /*
-   * Exports.
-   */
-
-  var rest_1 = rest;
-
-  /*
-   * Module dependencies.
-   */
-
-
-
-
-  var has$1 = Object.prototype.hasOwnProperty;
-  var objToString = Object.prototype.toString;
-
-  /**
-   * Returns `true` if a value is an object, otherwise `false`.
-   *
-   * @name isObject
-   * @api private
-   * @param {*} val The value to test.
-   * @return {boolean}
-   */
-  // TODO: Move to a library
-  var isObject = function isObject(value) {
-    return Boolean(value) && typeof value === 'object';
-  };
-
-  /**
-   * Returns `true` if a value is a plain object, otherwise `false`.
-   *
-   * @name isPlainObject
-   * @api private
-   * @param {*} val The value to test.
-   * @return {boolean}
-   */
-  // TODO: Move to a library
-  var isPlainObject = function isPlainObject(value) {
-    return Boolean(value) && objToString.call(value) === '[object Object]';
-  };
-
-  /**
-   * Assigns a key-value pair to a target object when the value assigned is owned,
-   * and where target[key] is undefined.
-   *
-   * @name shallowCombiner
-   * @api private
-   * @param {Object} target
-   * @param {Object} source
-   * @param {*} value
-   * @param {string} key
-   */
-  var shallowCombiner = function shallowCombiner(target, source, value, key) {
-    if (has$1.call(source, key) && target[key] === undefined) {
-      target[key] = value;
-    }
-    return source;
-  };
-
-  /**
-   * Assigns a key-value pair to a target object when the value assigned is owned,
-   * and where target[key] is undefined; also merges objects recursively.
-   *
-   * @name deepCombiner
-   * @api private
-   * @param {Object} target
-   * @param {Object} source
-   * @param {*} value
-   * @param {string} key
-   * @return {Object}
-   */
-  var deepCombiner = function(target, source, value, key) {
-    if (has$1.call(source, key)) {
-      if (isPlainObject(target[key]) && isPlainObject(value)) {
-          target[key] = defaultsDeep(target[key], value);
-      } else if (target[key] === undefined) {
-          target[key] = value;
-      }
-    }
-
-    return source;
-  };
-
-  /**
-   * TODO: Document
-   *
-   * @name defaultsWith
-   * @api private
-   * @param {Function} combiner
-   * @param {Object} target
-   * @param {...Object} sources
-   * @return {Object} Return the input `target`.
-   */
-  var defaultsWith = function(combiner, target /*, ...sources */) {
-    if (!isObject(target)) {
-      return target;
-    }
-
-    combiner = combiner || shallowCombiner;
-    var sources = drop_1(2, arguments);
-
-    for (var i = 0; i < sources.length; i += 1) {
-      for (var key in sources[i]) {
-        combiner(target, sources[i], sources[i][key], key);
-      }
-    }
-
-    return target;
-  };
-
-  /**
-   * Copies owned, enumerable properties from a source object(s) to a target
-   * object when the value of that property on the source object is `undefined`.
-   * Recurses on objects.
-   *
-   * @name defaultsDeep
-   * @api public
-   * @param {Object} target
-   * @param {...Object} sources
-   * @return {Object} The input `target`.
-   */
-  var defaultsDeep = function defaultsDeep(target /*, sources */) {
-    // TODO: Replace with `partial` call?
-    return defaultsWith.apply(null, [deepCombiner, target].concat(rest_1(arguments)));
-  };
-
-  /**
-   * Copies owned, enumerable properties from a source object(s) to a target
-   * object when the value of that property on the source object is `undefined`.
-   *
-   * @name defaults
-   * @api public
-   * @param {Object} target
-   * @param {...Object} sources
-   * @return {Object}
-   * @example
-   * var a = { a: 1 };
-   * var b = { a: 2, b: 2 };
-   *
-   * defaults(a, b);
-   * console.log(a); //=> { a: 1, b: 2 }
-   */
-  var defaults = function(target /*, ...sources */) {
-    // TODO: Replace with `partial` call?
-    return defaultsWith.apply(null, [null, target].concat(rest_1(arguments)));
-  };
-
-  /*
-   * Exports.
-   */
-
-  var defaults_1 = defaults;
-  var deep = defaultsDeep;
-  defaults_1.deep = deep;
-
   var GA = /*#__PURE__*/function () {
     function GA(config) {
       _classCallCheck(this, GA);
@@ -2471,6 +2240,7 @@ var rudderanalytics = (function (exports) {
               case "Checkout Step Completed":
                 var props = rudderElement.message.properties;
                 var options = this.extractCheckoutOptions(rudderElement);
+                console.log(options);
                 if (!props.step) return;
                 var params = {
                   step: props.step || 1,
@@ -2915,7 +2685,7 @@ var rudderanalytics = (function (exports) {
         var custom = this.metricsFunction(props, dimensionsArray, metricsArray, contentGroupingsArray);
 
         if (Object.keys(custom).length) {
-          if (inputs.setAllMappedProps) {
+          if (this.setAllMappedProps) {
             ga("set", custom);
           } else {
             componentEach(custom, function (key, value) {
@@ -3050,7 +2820,8 @@ var rudderanalytics = (function (exports) {
         product = _objectSpread2({
           product: product
         }, this.metricsFunction(props, dimensionsArray, metricsArray, contentGroupingsArray));
-        ga("ec:addProduct", product);
+        console.log(product);
+        ga("ec:addProduct", product.product);
       }
       /**
        * set action with data
@@ -4418,7 +4189,7 @@ var rudderanalytics = (function (exports) {
     return Keen;
   }();
 
-  var has$2 = Object.prototype.hasOwnProperty;
+  var has$1 = Object.prototype.hasOwnProperty;
 
   /**
    * Copy the properties of one or more `objects` onto a destination object. Input objects are iterated over
@@ -4445,7 +4216,7 @@ var rudderanalytics = (function (exports) {
 
     for (var i = 0; i < sources.length; i += 1) {
       for (var key in sources[i]) {
-        if (has$2.call(sources[i], key)) {
+        if (has$1.call(sources[i], key)) {
           dest[key] = sources[i][key];
         }
       }
@@ -5397,7 +5168,7 @@ var rudderanalytics = (function (exports) {
    */
 
   // TODO: Move to a library
-  var has$3 = function has(context, prop) {
+  var has$2 = function has(context, prop) {
     return hop.call(context, prop);
   };
 
@@ -5441,7 +5212,7 @@ var rudderanalytics = (function (exports) {
    * @return {Array}
    */
   var indexKeys = function indexKeys(target, pred) {
-    pred = pred || has$3;
+    pred = pred || has$2;
 
     var results = [];
 
@@ -5465,7 +5236,7 @@ var rudderanalytics = (function (exports) {
    * @return {Array}
    */
   var objectKeys = function objectKeys(target, pred) {
-    pred = pred || has$3;
+    pred = pred || has$2;
 
     var results = [];
 
@@ -5522,7 +5293,7 @@ var rudderanalytics = (function (exports) {
 
     // IE6-8 compatibility (arguments)
     if (isArrayLike(source)) {
-      return indexKeys(source, has$3);
+      return indexKeys(source, has$2);
     }
 
     return objectKeys(source);
@@ -5540,7 +5311,7 @@ var rudderanalytics = (function (exports) {
 
 
 
-  var objToString$1 = Object.prototype.toString;
+  var objToString = Object.prototype.toString;
 
   /**
    * Tests if a value is a number.
@@ -5553,7 +5324,7 @@ var rudderanalytics = (function (exports) {
   // TODO: Move to library
   var isNumber = function isNumber(val) {
     var type = typeof val;
-    return type === 'number' || (type === 'object' && objToString$1.call(val) === '[object Number]');
+    return type === 'number' || (type === 'object' && objToString.call(val) === '[object Number]');
   };
 
   /**
@@ -5566,7 +5337,7 @@ var rudderanalytics = (function (exports) {
    */
   // TODO: Move to library
   var isArray = typeof Array.isArray === 'function' ? Array.isArray : function isArray(val) {
-    return objToString$1.call(val) === '[object Array]';
+    return objToString.call(val) === '[object Array]';
   };
 
   /**
@@ -6880,6 +6651,237 @@ var rudderanalytics = (function (exports) {
       debug('error `decode(%o)` - %o', value, e);
     }
   }
+
+  var max = Math.max;
+
+  /**
+   * Produce a new array composed of all but the first `n` elements of an input `collection`.
+   *
+   * @name drop
+   * @api public
+   * @param {number} count The number of elements to drop.
+   * @param {Array} collection The collection to iterate over.
+   * @return {Array} A new array containing all but the first element from `collection`.
+   * @example
+   * drop(0, [1, 2, 3]); // => [1, 2, 3]
+   * drop(1, [1, 2, 3]); // => [2, 3]
+   * drop(2, [1, 2, 3]); // => [3]
+   * drop(3, [1, 2, 3]); // => []
+   * drop(4, [1, 2, 3]); // => []
+   */
+  var drop = function drop(count, collection) {
+    var length = collection ? collection.length : 0;
+
+    if (!length) {
+      return [];
+    }
+
+    // Preallocating an array *significantly* boosts performance when dealing with
+    // `arguments` objects on v8. For a summary, see:
+    // https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
+    var toDrop = max(Number(count) || 0, 0);
+    var resultsLength = max(length - toDrop, 0);
+    var results = new Array(resultsLength);
+
+    for (var i = 0; i < resultsLength; i += 1) {
+      results[i] = collection[i + toDrop];
+    }
+
+    return results;
+  };
+
+  /*
+   * Exports.
+   */
+
+  var drop_1 = drop;
+
+  var max$1 = Math.max;
+
+  /**
+   * Produce a new array by passing each value in the input `collection` through a transformative
+   * `iterator` function. The `iterator` function is passed three arguments:
+   * `(value, index, collection)`.
+   *
+   * @name rest
+   * @api public
+   * @param {Array} collection The collection to iterate over.
+   * @return {Array} A new array containing all but the first element from `collection`.
+   * @example
+   * rest([1, 2, 3]); // => [2, 3]
+   */
+  var rest = function rest(collection) {
+    if (collection == null || !collection.length) {
+      return [];
+    }
+
+    // Preallocating an array *significantly* boosts performance when dealing with
+    // `arguments` objects on v8. For a summary, see:
+    // https://github.com/petkaantonov/bluebird/wiki/Optimization-killers#32-leaking-arguments
+    var results = new Array(max$1(collection.length - 2, 0));
+
+    for (var i = 1; i < collection.length; i += 1) {
+      results[i - 1] = collection[i];
+    }
+
+    return results;
+  };
+
+  /*
+   * Exports.
+   */
+
+  var rest_1 = rest;
+
+  /*
+   * Module dependencies.
+   */
+
+
+
+
+  var has$3 = Object.prototype.hasOwnProperty;
+  var objToString$1 = Object.prototype.toString;
+
+  /**
+   * Returns `true` if a value is an object, otherwise `false`.
+   *
+   * @name isObject
+   * @api private
+   * @param {*} val The value to test.
+   * @return {boolean}
+   */
+  // TODO: Move to a library
+  var isObject = function isObject(value) {
+    return Boolean(value) && typeof value === 'object';
+  };
+
+  /**
+   * Returns `true` if a value is a plain object, otherwise `false`.
+   *
+   * @name isPlainObject
+   * @api private
+   * @param {*} val The value to test.
+   * @return {boolean}
+   */
+  // TODO: Move to a library
+  var isPlainObject = function isPlainObject(value) {
+    return Boolean(value) && objToString$1.call(value) === '[object Object]';
+  };
+
+  /**
+   * Assigns a key-value pair to a target object when the value assigned is owned,
+   * and where target[key] is undefined.
+   *
+   * @name shallowCombiner
+   * @api private
+   * @param {Object} target
+   * @param {Object} source
+   * @param {*} value
+   * @param {string} key
+   */
+  var shallowCombiner = function shallowCombiner(target, source, value, key) {
+    if (has$3.call(source, key) && target[key] === undefined) {
+      target[key] = value;
+    }
+    return source;
+  };
+
+  /**
+   * Assigns a key-value pair to a target object when the value assigned is owned,
+   * and where target[key] is undefined; also merges objects recursively.
+   *
+   * @name deepCombiner
+   * @api private
+   * @param {Object} target
+   * @param {Object} source
+   * @param {*} value
+   * @param {string} key
+   * @return {Object}
+   */
+  var deepCombiner = function(target, source, value, key) {
+    if (has$3.call(source, key)) {
+      if (isPlainObject(target[key]) && isPlainObject(value)) {
+          target[key] = defaultsDeep(target[key], value);
+      } else if (target[key] === undefined) {
+          target[key] = value;
+      }
+    }
+
+    return source;
+  };
+
+  /**
+   * TODO: Document
+   *
+   * @name defaultsWith
+   * @api private
+   * @param {Function} combiner
+   * @param {Object} target
+   * @param {...Object} sources
+   * @return {Object} Return the input `target`.
+   */
+  var defaultsWith = function(combiner, target /*, ...sources */) {
+    if (!isObject(target)) {
+      return target;
+    }
+
+    combiner = combiner || shallowCombiner;
+    var sources = drop_1(2, arguments);
+
+    for (var i = 0; i < sources.length; i += 1) {
+      for (var key in sources[i]) {
+        combiner(target, sources[i], sources[i][key], key);
+      }
+    }
+
+    return target;
+  };
+
+  /**
+   * Copies owned, enumerable properties from a source object(s) to a target
+   * object when the value of that property on the source object is `undefined`.
+   * Recurses on objects.
+   *
+   * @name defaultsDeep
+   * @api public
+   * @param {Object} target
+   * @param {...Object} sources
+   * @return {Object} The input `target`.
+   */
+  var defaultsDeep = function defaultsDeep(target /*, sources */) {
+    // TODO: Replace with `partial` call?
+    return defaultsWith.apply(null, [deepCombiner, target].concat(rest_1(arguments)));
+  };
+
+  /**
+   * Copies owned, enumerable properties from a source object(s) to a target
+   * object when the value of that property on the source object is `undefined`.
+   *
+   * @name defaults
+   * @api public
+   * @param {Object} target
+   * @param {...Object} sources
+   * @return {Object}
+   * @example
+   * var a = { a: 1 };
+   * var b = { a: 2, b: 2 };
+   *
+   * defaults(a, b);
+   * console.log(a); //=> { a: 1, b: 2 }
+   */
+  var defaults = function(target /*, ...sources */) {
+    // TODO: Replace with `partial` call?
+    return defaultsWith.apply(null, [null, target].concat(rest_1(arguments)));
+  };
+
+  /*
+   * Exports.
+   */
+
+  var defaults_1 = defaults;
+  var deep = defaultsDeep;
+  defaults_1.deep = deep;
 
   var json3 = createCommonjsModule(function (module, exports) {
   (function () {

@@ -2,8 +2,6 @@ import logger from "../../utils/logUtil";
 import { rejectArr } from "../../utils/utils";
 import is from "is";
 import each from "component-each";
-import extend from "extend";
-import defaults from "@ndhoule/defaults";
 
 class GA {
   constructor(config) {
@@ -182,6 +180,7 @@ class GA {
     }
     // enhanced ecommerce events
     else if (this.enhancedEcommerce) {
+  
       switch (event) {
         case "Checkout Started":
         case "Checkout Step Viewed":
@@ -200,9 +199,9 @@ class GA {
 
             self.enhancedEcommerceTrackProduct(
               productTrack,
-              this.dimensions,
-              this.metrics,
-              this.contentGroupings
+              self.dimensions,
+              self.metrics,
+              self.contentGroupings
             );
           });
 
@@ -221,7 +220,7 @@ class GA {
         case "Checkout Step Completed":
           var props = rudderElement.message.properties;
           var options = this.extractCheckoutOptions(rudderElement);
-
+           console.log(options)
           if (!props.step) return;
 
           var params = {
@@ -258,9 +257,9 @@ class GA {
             productTrack = { message: productTrack };
             self.enhancedEcommerceTrackProduct(
               productTrack,
-              this.dimensions,
-              this.metrics,
-              this.contentGroupings
+              self.dimensions,
+              self.metrics,
+              self.contentGroupings
             );
           });
           ga("ec:setAction", "purchase", {
@@ -915,8 +914,9 @@ class GA {
         contentGroupingsArray
       ),
     };
+    
 
-    ga("ec:addProduct", product);
+    ga("ec:addProduct", product.product);
   }
 
   /**

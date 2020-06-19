@@ -566,6 +566,7 @@
         ga('linker:autoLink', ['example.com', '3a842fe106ca.ngrok.io']);
       });
 
+
 //                       ================= page =================
       // rudderanalytics.page("new page");
       //page calls 
@@ -636,6 +637,40 @@
           rudderanalytics.track("new event 123", {
             name: "dhawal"
           });
+          window.rudderanalytics.track('Product Added', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product',
+            category: 'cat 1',
+            sku: 'p-298',
+            testDimension: true,
+            testMetric: true,
+            position: 4
+          });
+
+          window.rudderanalytics.track('Product Added', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product 1',
+            category: 'cat 1',
+            sku: 'p-298',
+            testDimension: true,
+            testMetric: true,
+            position: 4.5
+          });
+
+          window.rudderanalytics.track('Product Added', {
+            currency: 'CAD',
+            quantity: 1,
+            price: 24.75,
+            name: 'my product 2',
+            category: 'cat 1',
+            sku: 'p-298',
+            label: 'sample label'
+          });
+          
 
 //                       ================= track =================
     // window.rudderanalytics.track('event1');
