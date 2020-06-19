@@ -712,7 +712,7 @@ class GA {
 
     //adds more properties to pageview which will be sent
     pageview = {
-      pageview,
+      ...pageview,
       ...this.setCustomDimenionsAndMetrics(
         eventProperties,
         this.dimensions,
@@ -722,15 +722,17 @@ class GA {
     };
     var payload = {
       page: pagePath,
-      title: pageTitle,
+      title: pageTitle
     };
+     console.log(pageReferrer);
+     console.log(document.referrer);
     if (pageReferrer !== document.referrer) payload.referrer = pageReferrer;
 
-    ga("set", payload.payload);
+    ga("set", payload);
 
     if (this.pageCalled) delete pageview.location;
 
-    ga("send", "pageview", pageview.pageview);
+    ga("send", "pageview", pageview);
 
     //categorized pages
     if (category && this.trackCategorizedPages) {

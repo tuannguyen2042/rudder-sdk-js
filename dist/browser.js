@@ -2548,17 +2548,12 @@ var rudderanalytics = (function (exports) {
 
         ga("set", resetCustomDimensions); //adds more properties to pageview which will be sent
 
-        pageview = _objectSpread2({
-          pageview: pageview
-        }, this.setCustomDimenionsAndMetrics(eventProperties, this.dimensions, this.metrics, this.contentGroupings));
-        var payload = {
-          page: pagePath,
-          title: pageTitle
-        };
-        if (pageReferrer !== document.referrer) payload.referrer = pageReferrer;
-        ga("set", payload.payload);
+        pageview = _objectSpread2({}, pageview, {}, this.setCustomDimenionsAndMetrics(eventProperties, this.dimensions, this.metrics, this.contentGroupings));
+        console.log(pageReferrer);
+        console.log(document.referrer);
+        ga("set", rudderElement.message);
         if (this.pageCalled) delete pageview.location;
-        ga("send", "pageview", pageview.pageview); //categorized pages
+        ga("send", "pageview", pageview); //categorized pages
 
         if (category && this.trackCategorizedPages) {
           this.track(rudderElement, {
