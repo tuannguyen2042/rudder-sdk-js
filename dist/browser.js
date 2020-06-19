@@ -2228,7 +2228,7 @@ var rudderanalytics = (function (exports) {
                   productTrack = {
                     message: productTrack
                   };
-                  self.enhancedEcommerceTrackProduct(productTrack, this.dimensions, this.metrics, this.contentGroupings);
+                  self.enhancedEcommerceTrackProduct(productTrack, self.dimensions, self.metrics, self.contentGroupings);
                 });
                 ga("ec:setAction", "checkout", {
                   step: properties.step || 1,
@@ -2263,7 +2263,7 @@ var rudderanalytics = (function (exports) {
                   productTrack = {
                     message: productTrack
                   };
-                  self.enhancedEcommerceTrackProduct(productTrack, this.dimensions, this.metrics, this.contentGroupings);
+                  self.enhancedEcommerceTrackProduct(productTrack, self.dimensions, self.metrics, self.contentGroupings);
                 });
                 ga("ec:setAction", "purchase", {
                   id: orderId,
@@ -2430,7 +2430,7 @@ var rudderanalytics = (function (exports) {
 
               default:
                 var eventCategory = rudderElement.message.properties.category;
-                var eventAction = rudderElement.message.event || "";
+                var eventAction = rudderElement.message.event || rudderElement.message.name || "";
                 var eventLabel = rudderElement.message.properties.label;
                 var eventValue = "";
 
@@ -2820,7 +2820,6 @@ var rudderanalytics = (function (exports) {
         product = _objectSpread2({
           product: product
         }, this.metricsFunction(props, dimensionsArray, metricsArray, contentGroupingsArray));
-        console.log(product);
         ga("ec:addProduct", product.product);
       }
       /**

@@ -555,7 +555,7 @@ class GA {
           break;
         default:
           var eventCategory = rudderElement.message.properties.category;
-          var eventAction = rudderElement.message.event || "";
+          var eventAction = rudderElement.message.event || rudderElement.message.name ||"";
           var eventLabel = rudderElement.message.properties.label;
           var eventValue = "";
           if (rudderElement.message.properties) {
